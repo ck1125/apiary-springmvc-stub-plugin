@@ -30,7 +30,8 @@ apply plugin: "apiary-springmvc-stub"
 
 ## Usage
 
+````
 gradle generateSpringMVCStub (gS for short)
-
+````
 
 
