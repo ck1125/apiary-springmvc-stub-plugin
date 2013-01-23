@@ -18,10 +18,6 @@ class ApiaryStubGenerator {
     ApiaryStubGenerator(String configLocation, List<URL> compileClassPath) {
         classLoader = new URLClassLoader(compileClassPath as URL[],this.getClass().classLoader)
 
-        compileClassPath.each {
-            println ">>>>>>>>>>>>>>>>>> ${it}"
-        }
-
         if (configLocation.contains('xml')) {
             context = new XmlWebApplicationContext(classLoader: classLoader)
         } else {
@@ -37,35 +33,39 @@ class ApiaryStubGenerator {
         context.refresh()
         context.start()
 
-
-
         Map<String, Object> controllers = context.getBeansWithAnnotation(Controller)
-        println "retrieved ${controllers.size()} beans"
 
+        produceApiBlueprint(controllers,location)
 
+    }
+
+    private void produceApiBlueprint(Map<String,Object> controllers,String location) {
 
         new FileWriter(new File(location)).withWriter { Writer out ->
             if (controllers.size() > 0) {
                 producer.appendHeader(out)
+                produceBluePrintContent(controllers, out)
+                out.flush()
             }
-            controllers.each {
-                List<Method> requestMappingMethods = findRequestMappedMethods(it)
-                if (requestMappingMethods) {
-                    producer.appendControllerHeader(out, it.value.getClass().getName())
-                    requestMappingMethods.each {Method m ->
-                        producer.appendMappingInfo(out, m)
-                    }
-                }
-
-            }
-            out.flush()
         }
-
     }
 
-    private static Collection findRequestMappedMethods(Entry<String, Object> it) {
-        return it.value.getClass().getMethods().findAll { Method m ->
-            return m.getAnnotation(RequestMapping)
+    private void produceBluePrintContent(Map<String, Object> controllers, Writer out) {
+        controllers.each { controller ->
+            List<Method> requestMappingMethods = findRequestMappedMethods(controller.value)
+            if (requestMappingMethods) {
+                producer.appendControllerHeader(out, controller.value.getClass().getName())
+                requestMappingMethods.each {Method controllerRequestMappedMethod ->
+                    producer.appendMappingInfo(out, controllerRequestMappedMethod)
+                }
+            }
+
+        }
+    }
+
+    private static Collection findRequestMappedMethods(Object controller) {
+        return controller.getClass().getMethods().findAll { Method controllerMethod ->
+            return controllerMethod.getAnnotation(RequestMapping)
         }
     }
 }
