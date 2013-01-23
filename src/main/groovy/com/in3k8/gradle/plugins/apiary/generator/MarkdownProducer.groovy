@@ -20,8 +20,9 @@ class MarkdownProducer {
         out.write("""
 Method ${method.name}
 ${mapping.method()[0]} ${mapping.value()[0]}
+> Content-Type: ${mapping.produces() ? mapping.produces() : 'text/plain'}
 < 200
-> ${mapping.produces() ? mapping.produces() : 'text/plain'}
+< Content-Type: ${mapping.consumes() ? mapping.consumes() : 'text/plain'}
 """)
 
     }
