@@ -1,7 +1,6 @@
 package com.in3k8.gradle.plugins.apiary.generator
 
 import java.lang.reflect.Method
-import java.util.HashMap.Entry
 import org.springframework.mock.web.MockServletContext
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
