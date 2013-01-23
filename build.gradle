@@ -1,0 +1,40 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'maven'
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+group = 'com.in3k8.gradle.plugins'
+version = '0.1-SNAPSHOT'
+
+configure(install.repositories.mavenInstaller) {
+    pom.version = project.version
+    pom.groupId = "com.in3k8.gradle.plugins"
+    pom.artifactId = 'apiary-springmvc-stub'
+}
+
+dependencies {
+    testCompile ("org.spockframework:spock-core:0.6-groovy-1.8") {
+        exclude module: 'groovy-all'
+    }
+    compile gradleApi()
+    groovy localGroovy()
+
+    compile 'org.springframework:spring-webmvc:3.1.0.RELEASE',
+            'org.springframework:spring-test:3.1.0.RELEASE',
+            'javax.servlet:servlet-api:2.5',
+            'cglib:cglib-nodep:2.2',
+            'org.codehaus.jackson:jackson-mapper-asl:1.9.0'
+
+
+
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.2'
+}
+
