@@ -2,13 +2,10 @@ package com.in3k8.gradle.plugins.apiary
 
 import com.in3k8.gradle.plugins.apiary.generator.ApiaryStubGenerator
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.api.tasks.compile.GroovyCompile
-import org.gradle.api.tasks.SourceSet
 import org.gradle.api.artifacts.ResolvedConfiguration
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.TaskAction
 
 class GenerateSpringMVCStubTask extends DefaultTask {
 
@@ -16,7 +13,7 @@ class GenerateSpringMVCStubTask extends DefaultTask {
 
     GenerateSpringMVCStubTask() {
         super()
-        setDependsOn(['compileJava','compileGroovy'])
+        setDependsOn(['processResources','compileJava','compileGroovy'])
     }
 
     @OutputFile
@@ -46,7 +43,7 @@ class GenerateSpringMVCStubTask extends DefaultTask {
         ResolvedConfiguration resolvedConfiguration = project.getConfigurations().getByName('compile').resolvedConfiguration
 
         resolvedConfiguration.resolvedArtifacts.each {
-            projectCompileClasspath.add(it.file.toURL())
+                projectCompileClasspath.add(it.file.toURL())
         }
 
         return projectCompileClasspath
